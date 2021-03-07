@@ -62,7 +62,8 @@ if (!$data) {
     exit(json_encode(['error' => 'Bad Request']));
 }
 
-$path =  isset($data['path']) ? $data['path'] : '';
+// Prioritize path in JSON over server provided PATH_INFO.
+$path =  isset($data['path']) ? $data['path'] : strtolower($request->server('PATH_INFO', ''));
 
 // Can't combine the API key fetches into one line because it messes with the return the default type as the default feature of the server() method.
 $apikey = $request->server('HTTP_X_PORTALCONNECT_API_KEY', '');
