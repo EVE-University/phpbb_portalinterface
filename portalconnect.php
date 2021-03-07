@@ -78,13 +78,20 @@ if (!defined('PORTALCONNECT_API_KEY') || $apikey !== PORTALCONNECT_API_KEY) {
 
 if ($path == '/user/registered') {
     $userid = (int) isset($data['user_id']) ? $data['user_id'] : 0;
+    $username = isset($data['username']) ? $data['username'] : '';
 
-    if (!$userid) {
+    if (!$userid && !$username) {
         http_response_code(400);
         exit(json_encode(['error' => 'Bad Request']));
     }
     
-    if (!($row = getUserRowById($userid))) {
+    if ($userid) {
+        $row = getUserRowById($userid);
+    } else {
+        $row = getUserRowByName($username);
+    }
+
+    if (!$row) {
         $ret = ['registered' => false];
     } else {
         $ret = [
@@ -99,21 +106,27 @@ if ($path == '/user/registered') {
     // TODO: Implement?
 } else if ($path == '/user/setpasswd') {
     $userid = (int) isset($data['user_id']) ? $data['user_id'] : 0;
+    $username = isset($data['username']) ? $data['username'] : '';
     $newpasswd = isset($data['passwd']) ? $data['passwd'] : '';
 
-    if (!$userid) {
+    if (!$userid && !$username) {
+        http_response_code(400);
+        exit(json_encode(['error' => 'Bad Request']));
+    }
+    
+    if ($userid) {
+        $user_row = getUserRowById($userid);
+    } else {
+        $user_row = getUserRowByName($username);
+    }
+
+    if (!$user_row) {
         http_response_code(404);
         exit(json_encode(['error' => 'User does not exist']));
     }
     if (!$newpasswd) {
         http_response_code(400);
         exit(json_encode(['error' => 'New password cannot be empty']));
-    }
-
-    $user_row = getUserRowById($userid);
-    if (!$user_row) {
-        http_response_code(404);
-        exit(json_encode(['error' => 'User does not exist']));
     }
 
     // Shamelessly stolen from phpbb/ucp/controller/reset_password.php
