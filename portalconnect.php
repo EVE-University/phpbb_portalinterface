@@ -3,29 +3,9 @@
  * Quick, hacked together connector to get portal/forum connection back up quicker.
  * Would be better served with a modernized phpBB extension to handle this plus more.
  * 
- * You should set the PORTALCONNECT_API_KEY constant in config.php to a secure random value.
+ * Hacked together with shame by Marn.
  * 
- * Optional enivornment specific constants:
- * PORTALCONNECT_DEFAULT_GROUP - The EXACT group_name of the default group to add to every user created via this API.
- * PORTALCONNECT_DEFAULT_GROUPS - The EXACT group_names of the additional groups to add to every user by default. (Not Currently implemented)
- * 
- * This script implements the following POST endpoints that all take and output JSON.
- * 
- * [baseurl]/user/registered:
- *  POST Body
- *  {
- *      user_id : integer,
- *      apikey : string [optional]
- *  }
- *  
- *  OK Response
- *  {
- *      registered : bool,
- *      user_id : integer,
- *      username : string
- *  }
- *  
- * 
+ * See README.md for more info.
  */
 
 // TODO: Enforce TLS to access?
