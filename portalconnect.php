@@ -57,12 +57,12 @@ if ($method !== 'POST') {
 $bodyLen = $request->server('CONTENT_LENGTH');
 $data = json_decode(file_get_contents('php://input'), true);
 
-$path =  isset($data['path']) ? $data['path'] : '';
-
 if (!$data) {
     http_response_code(400);
     exit(json_encode(['error' => 'Bad Request']));
 }
+
+$path =  isset($data['path']) ? $data['path'] : '';
 
 // Can't combine the API key fetches into one line because it messes with the return the default type as the default feature of the server() method.
 $apikey = $request->server('HTTP_X_PORTALCONNECT_API_KEY', '');
