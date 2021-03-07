@@ -45,7 +45,6 @@ include($phpbb_root_path . 'common.' . $phpEx);
 include($phpbb_root_path . 'includes/functions_user.' . $phpEx);
 
 $method = strtoupper($request->server('REQUEST_METHOD'));
-$path = strtolower($request->server('PATH_INFO'));
 
 header('Content-Type: application/json');
 
@@ -57,6 +56,8 @@ if ($method !== 'POST') {
 // TODO: Should we limit max content length lower than the PHP settings here to prevent decoding very large JSON strings?
 $bodyLen = $request->server('CONTENT_LENGTH');
 $data = json_decode(file_get_contents('php://input'), true);
+
+$path =  isset($data['path']) ? $data['path'] : '';
 
 if (!$data) {
     http_response_code(400);
@@ -139,6 +140,7 @@ if ($path == '/user/registered') {
     $username = isset($data['username']) ? $data['username'] : '';
     $passwd = isset($data['passwd']) ? $data['passwd'] : '';
     $email = isset($data['email']) ? $data['email'] : 'notprovided@example.org';
+    $characterid =  isset($data['characterid']) ? $data['characterid'] : 0;
 
     if (getUserRowByName($username)) {
         http_response_code(409);
@@ -153,6 +155,10 @@ if ($path == '/user/registered') {
         'user_email' => $email,
         'group_id' => $groupMap[$defaultGroup],
         'user_type' => USER_NORMAL,
+        'user_avatar' => 'http://image.eveuniversity.org/character/'.$characterid.'_128.jpg',
+        'user_avatar_type' => 'avatar.driver.remote',
+        'user_avatar_width' => 128,
+        'user_avatar_height' => 128,
     ];
 
     // TODO: Add support for custom fields for things like charid, ownerhash, etc? Can't remember if custom fields are always visible publicly on profile.
