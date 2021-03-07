@@ -149,7 +149,7 @@ if ($path == '/user/registered') {
         'user_email' => $email,
         'group_id' => $groupMap[$defaultGroup],
         'user_type' => USER_NORMAL,
-        'user_avatar' => 'http://image.eveuniversity.org/character/'.$characterid.'_128.jpg',
+        'user_avatar' => 'https://images.evetech.net/characters/'. urlencode($characterid) .'/portrait?tenant=tranquility&size=128',
         'user_avatar_type' => 'avatar.driver.remote',
         'user_avatar_width' => 128,
         'user_avatar_height' => 128,
