@@ -8,6 +8,9 @@
  * See README.md for more info.
  */
 
+ // Hash algorithm, must be a value valid for the PHP hash() function.
+ $hashAlgo = defined('PORTALCONNECT_DEFAULT_HASH') ? PORTALCONNECT_DEFAULT_HASH : 'sha256';
+
 // TODO: Enforce TLS to access?
 
 // TODO: Add support for using either group names or group ids?
@@ -51,8 +54,17 @@ if (!$apikey) {
     $apikey = array_key_exists('apikey', $data) ? $data['apikey'] : '';
 }
 
-// Don't function if the API key isn't defined or doesn't match the setting.
-if (!defined('PORTALCONNECT_API_KEY') || $apikey !== PORTALCONNECT_API_KEY) {
+// Don't function if the API key isn't defined.
+if (!defined('PORTALCONNECT_API_KEY')) {
+    http_response_code(403);
+    exit(json_encode(['error' => 'Unauthorized']));
+}
+
+// Compare the pre-hash length and hashes using a timing safe compare function.
+$valid = (strlen(PORTALCONNECT_API_KEY) == strlen($apikey));
+$valid = hash_equals(hash($hashAlgo, PORTALCONNECT_API_KEY), hash($hashAlgo, $apikey)) ? $valid : false;
+
+if (!$valid) {
     http_response_code(403);
     exit(json_encode(['error' => 'Unauthorized']));
 }
